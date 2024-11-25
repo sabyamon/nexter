@@ -3,6 +3,8 @@ import { getConfig } from '../../../scripts/nexter.js';
 import getStyle from '../../../utils/styles.js';
 import { daFetch } from '../../../utils/daFetch.js';
 import { loadIms } from '../../../utils/ims.js';
+import './toggle-switch.js';
+import './pagination.js';
 
 const { nxBase } = getConfig();
 const style = await getStyle(import.meta.url);
@@ -26,7 +28,7 @@ class NxLocDashboard extends LitElement {
     _rolloutFilters: [],
     translationStatuses: ['Error', 'Completed', 'Created', 'In Progress'],
     rolloutStatuses: ['Error', 'Completed', 'Rollout Ready', 'In Progress'],
-    _viewAllProjects: true, // Default to "All Projects"
+    _viewAllProjects: true,
   };
 
   constructor() {
@@ -37,13 +39,13 @@ class NxLocDashboard extends LitElement {
     this._startDate = null;
     this._endDate = null;
     this._currentPage = 1;
-    this._projectsPerPage = 5; // Show 5 projects per page
+    this._projectsPerPage = 5;
     this._showFilterPopup = false;
     this._translationFilters = [];
     this._rolloutFilters = [];
     this.translationStatuses = ['Error', 'Completed', 'Created', 'In Progress'];
     this.rolloutStatuses = ['Error', 'Completed', 'Rollout Ready', 'In Progress'];
-    this._viewAllProjects = true; // Default to "All Projects"
+    this._viewAllProjects = true;
   }
 
   create() {
@@ -62,7 +64,7 @@ class NxLocDashboard extends LitElement {
     window.removeEventListener('click', this.handleOutsideClick);
   }
 
-  toggleProjectView() {
+  handleToggleChange() {
     this._viewAllProjects = !this._viewAllProjects;
     this.filterProjects();
   }
@@ -278,54 +280,9 @@ class NxLocDashboard extends LitElement {
     return paginatedProjects;
   }
 
-  // Handle page navigation
-  goToPage(page) {
-    if (page >= 1 && page <= Math.ceil(this._projects.length / this._projectsPerPage)) {
-      this._currentPage = page;
-    }
-  }
-
   navigateToProject(path) {
     const projectPath = `#${path?.replace('.json', '')}`;
     window.location.hash = projectPath; // Update the URL hash
-  }
-
-  renderPaginationControls() {
-    const totalPages = Math.ceil(this._filteredProjects.length / this._projectsPerPage);
-
-    return html`
-            <div class="pagination">
-                <div class="pagination-info">
-                    Showing ${this._paginationRange.start}–${this._paginationRange.end} of ${this._paginationRange.total}
-                </div>
-                <div class="pagination-controls">
-                    <button
-                            class="pagination-btn"
-                            ?disabled=${this._currentPage === 1}
-                            @click=${() => this.goToPage(this._currentPage - 1)}
-                    >
-                        Previous
-                    </button>
-                    ${Array.from({ length: totalPages }, (_, index) => index + 1).map(
-    (page) => html`
-                                <button
-                                        class="pagination-btn ${this._currentPage === page ? 'active' : ''}"
-                                        @click=${() => this.goToPage(page)}
-                                >
-                                    ${page}
-                                </button>
-                            `,
-  )}
-                    <button
-                            class="pagination-btn"
-                            ?disabled=${this._currentPage === totalPages}
-                            @click=${() => this.goToPage(this._currentPage + 1)}
-                    >
-                        Next
-                    </button>
-                </div>
-            </div>
-        `;
   }
 
   renderLanguages(languages) {
@@ -350,27 +307,17 @@ class NxLocDashboard extends LitElement {
   render() {
     const paginatedProjects = this.getPaginatedProjects();
     return html`
-            ${this._view !== 'create'
-    ? html`
+            ${this._view !== 'create' ? html`
                         <h1 class="dashboard-header">
                             <span>Dashboard</span>
-                            <div class="toggle-switch">
-                                <label>
-                                    <input
-                                            type="checkbox"
-                                            .checked=${!this._viewAllProjects}
-                                            @change=${this.toggleProjectView}
-                                    />
-                                    <span class="slider"></span>
-                                    <span class="toggle-label">
-        ${this._viewAllProjects ? 'All Projects' : 'My Projects'}
-      </span>
-                                </label>
-                            </div>
+                            <nx-toggle-switch
+                                    .checked=${this._viewAllProjects}
+                                    allLabel="All Projects"
+                                    myLabel="My Projects"
+                                    @toggle-change=${this.handleToggleChange}
+                            ></nx-toggle-switch>
                         </h1>
-
                         <div class="filter-bar">
-
                             <input
                                     type="text"
                                     class="search-input"
@@ -381,53 +328,32 @@ class NxLocDashboard extends LitElement {
                             <button class="filter-button" @click=${this.toggleFilterPopup}>
                                 Filter
                             </button>
-                            ${this._showFilterPopup
-    ? html`
-                                        <div
-                                                class="filter-popup"
-                                                style="top: ${this._popupPosition.top}px; left: ${this._popupPosition.left}px"
-                                        >
+                            ${this._showFilterPopup ? html`
+                                        <div class="filter-popup" style="top: ${this._popupPosition.top}px; left: ${this._popupPosition.left}px">
                                             <h3>Filter Options</h3>
                                             <div class="filter-section">
                                                 <h4>Translation Status</h4>
                                                 <div class="checkbox-grid">
-                                                    ${this.translationStatuses.map(
-    (status) => html`
+                                                    ${this.translationStatuses.map((status) => html`
                                                                 <label>
-                                                                    <input
-                                                                            type="checkbox"
-                                                                            .value=${status}
-                                                                            @change=${this.updateTranslationFilter}
-                                                                    />
+                                                                    <input type="checkbox" .value=${status} @change=${this.updateTranslationFilter}/>
                                                                     ${status}
-                                                                </label>
-                                                            `,
-  )}
+                                                                </label>`)}
                                                 </div>
                                             </div>
                                             <div class="filter-section">
                                                 <h4>Rollout Status</h4>
                                                 <div class="checkbox-grid">
-                                                    ${this.rolloutStatuses.map(
-    (status) => html`
+                                                    ${this.rolloutStatuses.map((status) => html`
                                                                 <label>
-                                                                    <input
-                                                                            type="checkbox"
-                                                                            .value=${status}
-                                                                            @change=${this.updateRolloutFilter}
-                                                                    />
+                                                                    <input type="checkbox" .value=${status} @change=${this.updateRolloutFilter}/>
                                                                     ${status}
-                                                                </label>
-                                                            `,
-  )}
+                                                                </label>`)}
                                                 </div>
                                             </div>
-                                            <button class="apply-filter-button" @click=${this.applyFilters}>
-                                                Apply
-                                            </button>
+                                            <button class="apply-filter-button" @click=${this.applyFilters}>Apply</button>
                                         </div>
-                                    `
-    : ''}
+                                    ` : ''}
                             <div class="date-range">
                                 <input
                                         type="date"
@@ -473,12 +399,15 @@ class NxLocDashboard extends LitElement {
   )}
                                         </div>
                                     </div>
-                                    ${this.renderPaginationControls()}
+                                    <nx-pagination
+                                            .currentPage=${this._currentPage}
+                                            .totalItems=${this._filteredProjects.length}
+                                            .itemsPerPage=${this._projectsPerPage}
+                                            @page-change=${(e) => (this._currentPage = e.detail.page)}
+                                    ></nx-pagination>
                                 `
-    : html`<p>No projects found.</p>`}
-                    `
-    : html`<nx-loc-setup></nx-loc-setup>`}
-        `;
+    : html`<p>No projects found.</p>`}`
+    : html`<nx-loc-setup></nx-loc-setup>`}`;
   }
 }
 
