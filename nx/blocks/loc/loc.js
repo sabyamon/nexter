@@ -22,9 +22,9 @@ class NxLoc extends LitElement {
 
   renderLocType() {
     const { hash } = window.location;
-    if (!hash) return html`<nx-loc-setup></nx-loc-setup>`;
+    if (!hash) return html`<nx-loc-dashboard></nx-loc-dashboard>`;
     const parts = hash.replace('#/', '').split('/');
-    if (parts.length === 2) return html`<nx-loc-dashboard></nx-loc-dashboard>`;
+    if (parts.length <= 2) return html`<nx-loc-dashboard></nx-loc-dashboard>`;
     if (parts.length > 2) return html`<nx-loc-project></nx-loc-project>`;
     return html`<nx-loc-setup></nx-loc-setup>`;
   }

@@ -1,0 +1,94 @@
+.accent {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.accent:hover {
+  background-color: #0056b3;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #333;
+  margin-bottom: var(--spacing-400);
+}
+
+.dropdown-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.custom-dropdown {
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  color: #4a5568;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  transition: all 0.2s ease-in-out;
+  width: 200px;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIuNTg0NzQgNS43NDE1NEw4LjAwMDI4IDExLjI1NzZMMTMuNDE1MiA1Ljc0MTU0IiBzdHJva2U9IiM0QTU1NjgiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+.custom-dropdown:focus {
+    border-color: #3182ce;
+    outline: none;
+    box-shadow: 0 0 6px rgba(49, 130, 206, 0.5);
+    cursor: pointer;
+}
+
+.custom-dropdown:hover {
+    background-color: #f7fafc;
+    cursor: pointer;
+}
+
+.custom-dropdown:disabled {
+    background-color: #e2e8f0;
+    color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.custom-dropdown::placeholder {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+/* Dropdown open state styling */
+.custom-dropdown:focus-within {
+    background-color: #ebf8ff; /* Light blue background */
+    border-color: #3182ce;
+    color: #2c5282;
+}
+
+/* Smooth animation for open */
+.custom-dropdown option {
+    padding: 10px 15px;
+    background-color: #ffffff;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.custom-dropdown option:hover {
+    background-color: #f7fafc; /* Light hover effect for options */
+    color: #2c5282;
+}
+
+/* Caret transition for open/close */
+.custom-dropdown:focus {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuNDE1MiAxMC4yNTc2TDguMDAwMjggNC43NDE1NEwxMi41ODQ3IDEwLjI1NzYiIHN0cm9rZT0iIzRhNTU2OCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K');
+    /* Upward arrow icon when focused */
+}

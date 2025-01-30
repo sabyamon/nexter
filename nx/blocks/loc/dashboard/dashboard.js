@@ -6,6 +6,7 @@ import { loadIms } from '../../../utils/ims.js';
 import './pagination.js';
 import './filter-bar.js';
 import './project-table.js';
+import './header.js';
 
 const { nxBase } = getConfig();
 const style = await getStyle(import.meta.url);
@@ -21,6 +22,8 @@ class NxLocDashboard extends LitElement {
     _siteBase: { attribute: false },
     _filteredProjects: { attribute: false },
     _loading: { attribute: false },
+    selectedOrg: { type: String },
+    selectedSite: { type: String },
   };
 
   constructor() {
@@ -30,20 +33,52 @@ class NxLocDashboard extends LitElement {
     this._currentPage = 1;
     this._projectsPerPage = 50;
     this._loading = true;
-  }
-
-  create() {
-    this._view = 'create';
+    this.selectedOrg = '';
+    this.selectedSite = '';
   }
 
   async connectedCallback() {
     super.connectedCallback();
     this.shadowRoot.adoptedStyleSheets = [style, buttons];
+    this.initializeFromHash();
     await this.getProjects();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
+  }
+
+  // Extract org and site from the hash and set them as initial values
+  initializeFromHash() {
+    const hash = window.location.hash.slice(2); // Remove the '#' at the start
+    if (hash) {
+      const [org, site] = hash.split('/');
+      this.selectedOrg = org || '';
+      this.selectedSite = site || '';
+    }
+  }
+
+  handleOrgChange(event) {
+    this.selectedOrg = event.detail.org;
+    // this.updateHash();
+    // Additional logic for org change, if needed
+  }
+
+  handleSiteChange(event) {
+    this.selectedSite = event.detail.site;
+    this.updateHash();
+    // Additional logic for site change, if needed
+  }
+
+  updateHash() {
+    const orgPart = this.selectedOrg ? this.selectedOrg : '';
+    const sitePart = this.selectedSite ? `/${this.selectedSite}` : '';
+    window.location.hash = `#/${orgPart}${sitePart}`;
+  }
+
+  startCreateView() {
+    console.log('create view called');
+    this._view = 'create';
   }
 
   // Apply filters
@@ -234,10 +269,12 @@ class NxLocDashboard extends LitElement {
   render() {
     return html`
       ${this._view !== 'create' ? html`
-        <div class="dashboard-header">
-          <h1>Dashboard</h1>
-          <button class="accent" @click=${this.create}>Create Project</button>
-        </div>
+        <nx-dashboard-header @create=${(e) => this.startCreateView()}
+                             .selectedOrg=${this.selectedOrg}
+                             .selectedSite=${this.selectedSite}
+                             @org-change=${this.handleOrgChange}
+                             @site-change=${this.handleSiteChange}>
+        </nx-dashboard-header>
         <nx-filter-bar @filter-change=${(e) => this.applyFilters(e.detail)}></nx-filter-bar>
         ${this.getMainContent()}`
     : html`<nx-loc-setup></nx-loc-setup>`}`;

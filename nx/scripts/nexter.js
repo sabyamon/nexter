@@ -154,3 +154,47 @@ export async function loadArea(area = document) {
   }
   if (isDoc) import('./lazy.js');
 }
+
+export function loadFeedbackBot() {
+  const button = document.createElement('button');
+  button.className = 'feedback-button';
+  button.textContent = 'Feedback';
+  button.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background: #1473e6;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+  `;
+
+  button.addEventListener('click', async () => {
+    const container = document.createElement('div');
+    container.className = 'feedback-widget';
+    container.style.cssText = `
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+    `;
+
+    const block = document.createElement('div');
+    block.className = 'feedback';
+    container.appendChild(block);
+    document.body.appendChild(container);
+
+    await loadBlock(block);
+  });
+
+  document.body.appendChild(button);
+}
