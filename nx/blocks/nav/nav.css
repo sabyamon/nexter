@@ -41,10 +41,13 @@ p {
   height: 24px;
 }
 
+
+
 .nx-nav-profile {
   position: relative;
-  margin-right: 17px;
+  margin-right: 0;
   font-size: 16px;
+  display: inline-flex;
 }
 
 .nx-nav-profile-menu {
@@ -52,7 +55,7 @@ p {
   position: absolute;
   right: 0;
   top: 38px;
-  background: #FFF;
+  background: #fff;
   border-radius: var(--s2-radius-200);
   min-width: 320px;
   padding: var(--spacing-200) 0;
@@ -131,4 +134,21 @@ p {
   max-width: 24px;
   border-radius: 12px;
   pointer-events: none;
+}
+
+.nx-nav-feedback {
+  position: relative;
+  margin-right: 8px;
+  font-size: 16px;
+  display: inline-flex;
+}
+
+.nx-nav-feedback button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.nx-nav-feedback button:hover {
+  background: #dfdfdf;
 }

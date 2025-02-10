@@ -84,7 +84,33 @@ class Nav extends HTMLElement {
       profileWrapper.querySelector('.nx-nav-profile-menu').classList.toggle('is-visible');
     });
     profileWrapper.querySelector('.nx-nav-profile-list-item-signout').addEventListener('click', signOut);
+    profileWrapper.append(this.renderFeedback());
     return fragment;
+  }
+
+  renderFeedback() {
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.className = 'nx-nav-feedback';
+    const button = document.createElement('button');
+    button.className = 'nx-nav-btn nx-nav-btn-feedback';
+    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+
+    button.addEventListener('click', () => {
+      const dialog = document.createElement('dialog');
+      dialog.innerHTML = `
+        <h2>Feedback</h2>
+        <form method="dialog">
+          <textarea placeholder="Enter your feedback"></textarea>
+          <button>Submit</button>
+          <button>Cancel</button>
+        </form>
+      `;
+      document.body.appendChild(dialog);
+      dialog.showModal();
+    });
+
+    feedbackDiv.append(button);
+    return feedbackDiv;
   }
 
   renderSignin(signIn) {
@@ -117,6 +143,8 @@ class Nav extends HTMLElement {
     this.shadowRoot.append(nav);
     delete this.closest('header').dataset.status;
     const profile = await this.getProfile();
+    /* const feedback = this.renderFeedback();
+    if (feedback) this.shadowRoot.append(feedback); */
     if (profile) this.shadowRoot.append(profile);
   }
 }
